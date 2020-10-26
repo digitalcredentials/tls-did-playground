@@ -1,0 +1,19 @@
+{
+  "name": "tls-did-playground",
+  "version": "0.0.1",
+  "description": "TLS-DID playground, provides example usage and test the tls-did libraries",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tls-did-project/tls-did-playground.git"
+  },
+  "author": "Kilian Käslin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tls-did-project/tls-did-playground/issues"
+  },
+  "homepage": "https://github.com/tls-did-project/tls-did-playground#readme"
+}
