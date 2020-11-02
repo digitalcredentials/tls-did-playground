@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "TLS-DID playground, provides example usage and test the tls-did libraries",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/tls-did-project/tls-did-playground/issues"
   },
-  "homepage": "https://github.com/tls-did-project/tls-did-playground#readme"
+  "homepage": "https://github.com/tls-did-project/tls-did-playground#readme",
+  "dependencies": {
+    "ethers": "^5.0.19",
+    "tls-did": "github:tls-did-project/tls-did#main",
+    "tls-did-resolver": "github:tls-did-project/tls-did-resolver#master"
+  }
 }
