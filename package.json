@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "ganache": "node --experimental-json-modules helpers/ganache",
+    "truffle": "node --experimental-json-modules helpers/truffle",
+    "start": "node --experimental-json-modules src/index.js"
   },
   "repository": {
     "type": "git",

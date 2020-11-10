@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { TLSDID } from 'tls-did';
 import { getResolver } from 'tls-did-resolver';
+import environment from '../environment.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,12 +15,11 @@ const __dirname = dirname(__filename);
 console.log('Example TLSDID flow');
 
 //To deploy registry: npm run deploy @tls-did-registry
-const REGISTRY = '0xf5513bc073A86394a0Fa26F11318D5D30AeAf550';
+const REGISTRY = environment.registryAddress;
 console.log('REGISTRY:', REGISTRY);
 
 //Private ethereum key to create / register / updated tls did contract
-const etherPrivateKey =
-  '0x0c8409af9c479d1af65ccfc4f7ecc1fcc219ea0f42dc3351ef9181b0ae28bcd1';
+const etherPrivateKey = environment.privateKey;
 console.log('Ethereum private key:', etherPrivateKey);
 
 //Setup ethereum provider
@@ -33,16 +33,18 @@ const pemKey = readFileSync(__dirname + pemKeyPath, 'utf8');
 console.log('TLS pem key: \n', `${pemKey.substring(0, 64)}...`);
 
 //Setup TLSDID object
-const tlsDid = new TLSDID(pemKey, etherPrivateKey, provider);
+const tlsDid = new TLSDID(pemKey, etherPrivateKey, provider, REGISTRY);
 
 //Deploy tls DID contract to ethereum blockchain
 console.log('Deploying contract....');
 await tlsDid.deployContract();
+console.log('Contract address:', tlsDid.getAddress());
 
 //Register tls DID contract with domain as key to ethereum blockchain
 //We randomly generate the domain to avoid multiple valid contracts
 //for the same domain during one test session
-const domain = `example${Math.random()}.org`;
+const random = Math.random().toString(36).substring(7);
+const domain = `example-${random}.org`;
 console.log('Registering contract with domain:', domain);
 await tlsDid.registerContract(domain);
 
@@ -55,7 +57,7 @@ console.log('Setting expiry');
 await tlsDid.setExpiry(new Date('2040/12/12'));
 
 //Resolve DID Document
-console.log('Resolving did ducument');
-const resolver = getResolver(provider);
+console.log('Resolving DID Document for did:', `did:tls:${domain}`);
+const resolver = getResolver(provider, REGISTRY);
 const didDocument = await resolver.tls(`did:tls:${domain}`);
 console.log('DID Document:', didDocument);
