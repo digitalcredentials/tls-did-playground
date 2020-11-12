@@ -33,7 +33,9 @@ const pemKey = readFileSync(__dirname + pemKeyPath, 'utf8');
 console.log('TLS pem key: \n', `${pemKey.substring(0, 64)}...`);
 
 //Setup TLSDID object
-const tlsDid = new TLSDID(pemKey, etherPrivateKey, provider, REGISTRY);
+const tlsDid = new TLSDID(pemKey, etherPrivateKey, REGISTRY, {
+  provider,
+});
 
 //Deploy tls DID contract to ethereum blockchain
 console.log('Deploying contract....');
