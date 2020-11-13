@@ -19,6 +19,9 @@
     "url": "https://github.com/tls-did-project/tls-did-playground/issues"
   },
   "homepage": "https://github.com/tls-did-project/tls-did-playground#readme",
+  "devDependencies": {
+    "ganache-cli": "^6.12.0"
+  },
   "dependencies": {
     "ethers": "^5.0.19",
     "tls-did": "github:tls-did-project/tls-did#master",

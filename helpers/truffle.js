@@ -1,13 +1,13 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 
-const test = execSync(`npm run deploy-registry --prefix ../tls-did-registry`, {
+const registryPath = '../tls-did-registry';
+
+const test = execSync(`npm run deploy-registry --prefix ${registryPath}`, {
   stdio: 'inherit',
 });
 
-const readData = readFileSync(
-  '../tls-did-registry/helpers/contractRegistry.json'
-);
+const readData = readFileSync(`${registryPath}/helpers/contractRegistry.json`);
 
 const contractRegistry = JSON.parse(readData);
 
@@ -20,6 +20,5 @@ function storeAddress(address) {
   environment.registryAddress = address;
 
   const writeData = JSON.stringify(environment);
-  console.log('write', writeData);
   writeFileSync('environment.json', writeData);
 }
