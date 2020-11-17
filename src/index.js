@@ -50,9 +50,14 @@ const domain = `example-${random}.org`;
 console.log('Registering contract with domain:', domain);
 await tlsDid.registerContract(domain);
 
-//Add attribute to DID Document (path, value)
+//Add attributea to DID Document (path, value)
 console.log('Adding example attribute to DID Document');
+//Adds {parent: {child: value}}
 await tlsDid.addAttribute('parent/child', 'value');
+//Adds {array: [{element: value}]}
+await tlsDid.addAttribute('arrayA[]/element', 'value');
+//Adds {array: [value]}
+await tlsDid.addAttribute('arrayB[]', 'value');
 
 //Add expiry to tls DID contract
 console.log('Setting expiry');
