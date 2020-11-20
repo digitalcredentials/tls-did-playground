@@ -1,14 +1,16 @@
 # tls-did-playground
 
-A playground to provide an example and test the tls-did libraries
+A playground to provide an example usage of the tls-did libraries
 
 ## Prerequisite
+
+- Clone the **tls-did-registry** repository into the same parent directory as the **tls-did-playground**
 
 - Minimum node.js: v14.3.0
   ```
   node -v
   ```
-- **tls-did-registry** repository on the same path as **tls-did-playground**
+
 
 ## Installation
 
