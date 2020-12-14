@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "ethers": "^5.0.19",
-    "tls-did": "github:tls-did-project/tls-did#master",
-    "tls-did-resolver": "github:tls-did-project/tls-did-resolver#master"
+    "tls-did": "github:tls-did-project/tls-did#feature/KK-CertRegistry",
+    "tls-did-resolver": "github:tls-did-project/tls-did-resolver#feature/KK-CertRegistry"
   }
 }

@@ -1,6 +1,5 @@
 // Example tls-did creation and resolving
 import { readFileSync } from 'fs';
-import { providers } from 'ethers';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { TLSDID } from 'tls-did';
@@ -24,17 +23,19 @@ console.log('Ethereum private key:', etherPrivateKey);
 
 //Setup ethereum provider
 const jsonRpcUrl = 'http://localhost:8545';
-const provider = new providers.JsonRpcProvider(jsonRpcUrl);
 console.log('Json Rpc Url:', jsonRpcUrl);
 
 //Private tls key for signing
-const pemKeyPath = '/ssl/private/testserver.pem';
+const pemKeyPath = '/ssl/private/privKey.pem';
 const pemKey = readFileSync(__dirname + pemKeyPath, 'utf8');
 console.log('TLS pem key: \n', `${pemKey.substring(0, 64)}...`);
 
 //Setup TLSDID object
-const tlsDid = new TLSDID(pemKey, etherPrivateKey, REGISTRY, {
-  provider,
+const tlsDid = new TLSDID(pemKey, etherPrivateKey, {
+  registry: REGISTRY,
+  providerConfig: {
+    rpcUrl: jsonRpcUrl,
+  },
 });
 
 //Deploy tls DID contract to ethereum blockchain
@@ -42,13 +43,22 @@ console.log('Deploying contract....');
 await tlsDid.deployContract();
 console.log('Contract address:', tlsDid.getAddress());
 
-//Register tls DID contract with domain as key to ethereum blockchain
+//Register TLS DID contract with domain as key to ethereum blockchain
 //We randomly generate the domain to avoid multiple valid contracts
 //for the same domain during one test session
-const random = Math.random().toString(36).substring(7);
-const domain = `example-${random}.org`;
+const domain = 'tls-did.de';
 console.log('Registering contract with domain:', domain);
 await tlsDid.registerContract(domain);
+
+//Register TLS pem cert chain
+//Registering is needed for the full chain exept the root certificate
+const certPath = '/ssl/certs/cert.pem';
+const cert = readFileSync(__dirname + certPath, 'utf8');
+const intermediateCertPath = '/ssl/certs/intermediateCert.pem';
+const intermediateCert = readFileSync(__dirname + intermediateCertPath, 'utf8');
+const chain = [cert, intermediateCert];
+console.log('Registering cert chain:', chain);
+await tlsDid.registerChain(chain);
 
 //Add attributea to DID Document (path, value)
 console.log('Adding example attribute to DID Document');
@@ -65,6 +75,11 @@ await tlsDid.setExpiry(new Date('2040/12/12'));
 
 //Resolve DID Document
 console.log('Resolving DID Document for did:', `did:tls:${domain}`);
-const resolver = getResolver(provider, REGISTRY);
+const resolver = getResolver(
+  {
+    rpcUrl: jsonRpcUrl,
+  },
+  REGISTRY
+);
 const didDocument = await resolver.tls(`did:tls:${domain}`);
 console.log('DID Document:', didDocument);
