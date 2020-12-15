@@ -1,4 +1,4 @@
-// Example tls-did creation and resolving
+import { rootCertificates } from 'tls';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -79,7 +79,8 @@ const resolver = getResolver(
   {
     rpcUrl: jsonRpcUrl,
   },
-  REGISTRY
+  REGISTRY,
+  rootCertificates
 );
 const didDocument = await resolver.tls(`did:tls:${domain}`);
 console.log('DID Document:', didDocument);
