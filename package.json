@@ -7,7 +7,8 @@
   "scripts": {
     "ganache": "node --experimental-json-modules helpers/ganache",
     "truffle": "node --experimental-json-modules helpers/truffle",
-    "start": "node --experimental-json-modules src/index.js"
+    "start": "node --experimental-json-modules src/index.js",
+    "reload": "rm -rf node_modules && rm package-lock.json && npm i"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "ethers": "^5.0.19",
-    "tls-did": "github:tls-did-project/tls-did#feature/KK-CertRegistry",
-    "tls-did-resolver": "github:tls-did-project/tls-did-resolver#feature/KK-CertRegistry"
+    "tls-did": "github:tls-did-project/tls-did#development",
+    "tls-did-resolver": "github:tls-did-project/tls-did-resolver#development"
   }
 }
