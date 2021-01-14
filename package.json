@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "ganache": "node --experimental-json-modules helpers/ganache",
-    "truffle": "node --experimental-json-modules helpers/truffle",
+    "testnet": "node --experimental-json-modules helpers/ganache",
+    "deployRegistry": "node --experimental-json-modules helpers/truffle",
     "start": "node --experimental-json-modules src/index.js",
     "reload": "rm -rf node_modules && rm package-lock.json && npm i"
   },

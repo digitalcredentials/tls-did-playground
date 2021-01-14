@@ -11,13 +11,13 @@ const __dirname = dirname(__filename);
 
 //Registry address has to be updated to registry contract address
 //For testing we use ganache-cli
-console.log('Example TLSDID flow');
+console.log('Example TLS-DID flow');
 
 //To deploy registry: npm run deploy @tls-did-registry
 const REGISTRY = environment.registryAddress;
 console.log('REGISTRY:', REGISTRY);
 
-//Private ethereum key to create / register / updated tls did contract
+//Private ethereum key to create / register / updated TLS-DID contract
 const etherPrivateKey = environment.privateKey;
 console.log('Ethereum private key:', etherPrivateKey);
 
@@ -25,12 +25,12 @@ console.log('Ethereum private key:', etherPrivateKey);
 const jsonRpcUrl = 'http://localhost:8545';
 console.log('Json Rpc Url:', jsonRpcUrl);
 
-//Private tls key for signing
+//Private TLS key for signing
 const pemKeyPath = '/ssl/private/privKey.pem';
 const pemKey = readFileSync(__dirname + pemKeyPath, 'utf8');
 console.log('TLS pem key: \n', `${pemKey.substring(0, 64)}...`);
 
-//Setup TLSDID object
+//Setup TLS-DID object
 const tlsDid = new TLSDID(etherPrivateKey, {
   registry: REGISTRY,
   providerConfig: {
@@ -38,12 +38,12 @@ const tlsDid = new TLSDID(etherPrivateKey, {
   },
 });
 
-//Deploy tls DID contract to ethereum blockchain
+//Deploy TLS-DID contract to ethereum blockchain
 console.log('Deploying contract....');
 await tlsDid.deployContract();
 console.log('Contract address:', tlsDid.getAddress());
 
-//Register TLS DID contract with domain as key to ethereum blockchain
+//Register TLS-DID contract with domain as key to ethereum blockchain
 //We randomly generate the domain to avoid multiple valid contracts
 //for the same domain during one test session
 const domain = 'tls-did.de';
@@ -72,7 +72,7 @@ await tlsDid.addAttribute('arrayA[]/element', 'value', pemKey);
 //Adds {array: [value]}
 await tlsDid.addAttribute('arrayB[]', 'value', pemKey);
 
-//Add expiry to tls DID contract
+//Add expiry to TLS-DID contract
 console.log('Setting expiry');
 await tlsDid.setExpiry(new Date('2040/12/12'), pemKey);
 
@@ -91,3 +91,7 @@ try {
 } catch (err) {
   console.error('Error while resolving did.', err.message);
 }
+
+//Add expiry to TLS-DID contract
+console.log('Deleting TLS-DID');
+await tlsDid.delete();
