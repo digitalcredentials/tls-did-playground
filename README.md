@@ -24,8 +24,8 @@ npm i
 ## Pre Run
 
 ```
-npm run ganache
-npm run truffle
+npm run testnet
+npm run deployRegistry
 ```
 
 ## Run

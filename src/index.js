@@ -2,8 +2,8 @@ import { rootCertificates } from 'tls';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { TLSDID } from 'tls-did';
-import { getResolver } from 'tls-did-resolver';
+import { TLSDID } from '@digitalcredentials/tls-did';
+import { getResolver } from '@digitalcredentials/tls-did-resolver';
 import environment from '../environment.json';
 
 const __filename = fileURLToPath(import.meta.url);
