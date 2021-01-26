@@ -68,9 +68,9 @@ console.log('Adding example attribute to DID Document');
 //Adds {parent: {child: value}}
 await tlsDid.addAttribute('parent/child', 'value', pemKey);
 //Adds {array: [{element: value}]}
-await tlsDid.addAttribute('arrayA[]/element', 'value', pemKey);
+await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
 //Adds {array: [value]}
-await tlsDid.addAttribute('arrayB[]', 'value', pemKey);
+await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
 //Add assertionMethod to DID Document
 console.log('Adding assertionMethod to DID Document');
 await tlsDid.addAttribute(
