@@ -63,7 +63,7 @@ console.log(
 );
 await tlsDid.addChain(chain, pemKey);
 
-//Add attributea to DID Document (path, value)
+//Add attributes to DID Document (path, value)
 console.log('Adding example attribute to DID Document');
 //Adds {parent: {child: value}}
 await tlsDid.addAttribute('parent/child', 'value', pemKey);
@@ -71,6 +71,28 @@ await tlsDid.addAttribute('parent/child', 'value', pemKey);
 await tlsDid.addAttribute('arrayA[]/element', 'value', pemKey);
 //Adds {array: [value]}
 await tlsDid.addAttribute('arrayB[]', 'value', pemKey);
+//Add assertionMethod to DID Document
+console.log('Adding assertionMethod to DID Document');
+await tlsDid.addAttribute(
+  'assertionMethod[0]/id',
+  'did:example:123456789abcdefghi#keys-2',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/type',
+  'Ed25519VerificationKey2018',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/controller',
+  'did:example:123456789abcdefghi',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/publicKeyBase58',
+  'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV',
+  pemKey
+);
 
 //Add expiry to TLS-DID contract
 console.log('Setting expiry');
@@ -92,6 +114,6 @@ try {
   console.error('Error while resolving did.', err.message);
 }
 
-//Add expiry to TLS-DID contract
+//Delete TLS-DID
 console.log('Deleting TLS-DID');
 await tlsDid.delete();
