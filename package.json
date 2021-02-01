@@ -26,6 +26,7 @@
   "dependencies": {
     "@digitalcredentials/tls-did": "^0.1.4",
     "@digitalcredentials/tls-did-resolver": "^0.2.1",
+    "did-resolver": "^2.1.2",
     "ethers": "^5.0.19"
   }
 }

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { TLSDID } from '@digitalcredentials/tls-did';
 import { getResolver } from '@digitalcredentials/tls-did-resolver';
+import { Resolver } from 'did-resolver';
 import environment from '../environment.json';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -98,17 +99,20 @@ await tlsDid.addAttribute(
 console.log('Setting expiry');
 await tlsDid.setExpiry(new Date('2040/12/12'), pemKey);
 
-//Resolve DID Document
+//Setup resolver
 console.log('Resolving DID Document for did:', `did:tls:${domain}`);
-const resolver = getResolver(
+const tlsResolver = getResolver(
   {
     rpcUrl: jsonRpcUrl,
   },
   REGISTRY,
   rootCertificates
 );
+const resolver = new Resolver({ ...tlsResolver });
+
+//Resolve DID Document
 try {
-  const didDocument = await resolver.tls(`did:tls:${domain}`);
+  const didDocument = await resolver.resolve(`did:tls:${tlsDid.domain}`);
   console.log('DID Document:', didDocument);
 } catch (err) {
   console.error('Error while resolving did.', err.message);
