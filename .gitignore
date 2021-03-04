@@ -1,3 +1,6 @@
+# The public environment contains private data
+publicEnv.json
+
 # Logs
 logs
 *.log

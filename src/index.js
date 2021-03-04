@@ -5,7 +5,8 @@ import { dirname } from 'path';
 import { TLSDID } from '@digitalcredentials/tls-did';
 import { getResolver } from '@digitalcredentials/tls-did-resolver';
 import { Resolver } from 'did-resolver';
-import environment from '../environment.json';
+import localEnv from '../environment.json';
+import publicEnv from '../publicEnv.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,16 +15,25 @@ const __dirname = dirname(__filename);
 //For testing we use ganache-cli
 console.log('Example TLS-DID flow');
 
+let REGISTRY;
+let jsonRpcUrl;
+let etherPrivateKey;
+
+function setEnvironment(config) {
+  REGISTRY = config.registryAddress;
+  etherPrivateKey = config.privateKey;
+  jsonRpcUrl = config.rpcUrl;
+}
+
+setEnvironment(publicEnv)
+
 //To deploy registry: npm run deploy @tls-did-registry
-const REGISTRY = environment.registryAddress;
 console.log('REGISTRY:', REGISTRY);
 
 //Private ethereum key to create / register / updated TLS-DID contract
-const etherPrivateKey = environment.privateKey;
 console.log('Ethereum private key:', etherPrivateKey);
 
 //Setup ethereum provider
-const jsonRpcUrl = 'http://localhost:8545';
 console.log('Json Rpc Url:', jsonRpcUrl);
 
 //Private TLS key for signing
@@ -52,7 +62,7 @@ console.log('Registering contract with domain:', domain);
 await tlsDid.registerContract(domain, pemKey);
 
 //Register TLS pem cert chain
-//Registering is needed for the full chain exept the root certificate
+//Registering is needed for the full chain except the root certificate
 const certPath = '/ssl/certs/cert.pem';
 const cert = readFileSync(__dirname + certPath, 'utf8');
 const intermediateCertPath = '/ssl/certs/intermediateCert.pem';
@@ -64,36 +74,36 @@ console.log(
 );
 await tlsDid.addChain(chain, pemKey);
 
-//Add attributes to DID Document (path, value)
-console.log('Adding example attribute to DID Document');
-//Adds {parent: {child: value}}
-await tlsDid.addAttribute('parent/child', 'value', pemKey);
-//Adds {array: [{element: value}]}
-await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
-//Adds {array: [value]}
-await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
-//Add assertionMethod to DID Document
-console.log('Adding assertionMethod to DID Document');
-await tlsDid.addAttribute(
-  'assertionMethod[0]/id',
-  'did:example:123456789abcdefghi#keys-2',
-  pemKey
-);
-await tlsDid.addAttribute(
-  'assertionMethod[0]/type',
-  'Ed25519VerificationKey2018',
-  pemKey
-);
-await tlsDid.addAttribute(
-  'assertionMethod[0]/controller',
-  'did:example:123456789abcdefghi',
-  pemKey
-);
-await tlsDid.addAttribute(
-  'assertionMethod[0]/publicKeyBase58',
-  'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV',
-  pemKey
-);
+// //Add attributes to DID Document (path, value)
+// console.log('Adding example attribute to DID Document');
+// //Adds {parent: {child: value}}
+// await tlsDid.addAttribute('parent/child', 'value', pemKey);
+// //Adds {array: [{element: value}]}
+// await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
+// //Adds {array: [value]}
+// await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
+// //Add assertionMethod to DID Document
+// console.log('Adding assertionMethod to DID Document');
+// await tlsDid.addAttribute(
+//   'assertionMethod[0]/id',
+//   'did:example:123456789abcdefghi#keys-2',
+//   pemKey
+// );
+// await tlsDid.addAttribute(
+//   'assertionMethod[0]/type',
+//   'Ed25519VerificationKey2018',
+//   pemKey
+// );
+// await tlsDid.addAttribute(
+//   'assertionMethod[0]/controller',
+//   'did:example:123456789abcdefghi',
+//   pemKey
+// );
+// await tlsDid.addAttribute(
+//   'assertionMethod[0]/publicKeyBase58',
+//   'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV',
+//   pemKey
+// );
 
 //Add expiry to TLS-DID contract
 console.log('Setting expiry');
@@ -119,5 +129,5 @@ try {
 }
 
 //Delete TLS-DID
-console.log('Deleting TLS-DID');
-await tlsDid.delete();
+// console.log('Deleting TLS-DID');
+// await tlsDid.delete();

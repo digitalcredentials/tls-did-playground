@@ -23,6 +23,29 @@ npm i
 
 ## Pre Run
 
+In src/index.js you can switch between a local testnet and a testnet of your choice. To add a testnet of you choice add a publicEnv.json in the project directory.
+
+**publicEnv.json format:**
+
+```json
+{
+  "privateKey":<ethereum private key>,
+  "registryAddress":<registry address>,
+  "rpcUrl":<rpcUrl>
+}
+```
+**Goerli**
+
+```json
+{
+  "privateKey":<ethereum private key>,
+  "registryAddress":"0x60492b0755D8dba01dB9915a1f8Bf28D242BF6dC",
+  "rpcUrl":"https://goerli.infura.io/v3/923dab15302f45aba7158692f117ac0c"
+}
+```
+
+**Local Testnet**
+
 ```
 npm run testnet
 npm run deployRegistry
