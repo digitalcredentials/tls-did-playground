@@ -129,5 +129,5 @@ try {
 }
 
 //Delete TLS-DID
-// console.log('Deleting TLS-DID');
-// await tlsDid.delete();
+console.log('Deleting TLS-DID');
+await tlsDid.delete();
