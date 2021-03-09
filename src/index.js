@@ -25,7 +25,7 @@ function setEnvironment(config) {
   jsonRpcUrl = config.rpcUrl;
 }
 
-setEnvironment(publicEnv)
+setEnvironment(localEnv)
 
 //To deploy registry: npm run deploy @tls-did-registry
 console.log('REGISTRY:', REGISTRY);
