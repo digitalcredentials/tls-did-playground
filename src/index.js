@@ -8,6 +8,9 @@ import { Resolver } from 'did-resolver';
 import localEnv from '../environment.json';
 import publicEnv from '../publicEnv.json';
 
+//To start the testnet: npm run testnet
+//To deploy registry: npm run deployRegistry
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -19,6 +22,7 @@ let REGISTRY;
 let jsonRpcUrl;
 let etherPrivateKey;
 
+//setEnvironment reads the config file an sets local constants
 function setEnvironment(config) {
   REGISTRY = config.registryAddress;
   etherPrivateKey = config.privateKey;
@@ -27,7 +31,7 @@ function setEnvironment(config) {
 
 setEnvironment(localEnv)
 
-//To deploy registry: npm run deploy @tls-did-registry
+//Address of registry contract on local or public testnet
 console.log('REGISTRY:', REGISTRY);
 
 //Private ethereum key to create / register / updated TLS-DID contract
@@ -54,9 +58,7 @@ console.log('Deploying contract....');
 await tlsDid.deployContract();
 console.log('Contract address:', tlsDid.getAddress());
 
-//Register TLS-DID contract with domain as key to ethereum blockchain
-//We randomly generate the domain to avoid multiple valid contracts
-//for the same domain during one test session
+//Register TLS-DID contract with domain as key in registry contract
 const domain = 'tls-did.de';
 console.log('Registering contract with domain:', domain);
 await tlsDid.registerContract(domain, pemKey);
@@ -74,36 +76,36 @@ console.log(
 );
 await tlsDid.addChain(chain, pemKey);
 
-// //Add attributes to DID Document (path, value)
-// console.log('Adding example attribute to DID Document');
-// //Adds {parent: {child: value}}
-// await tlsDid.addAttribute('parent/child', 'value', pemKey);
-// //Adds {array: [{element: value}]}
-// await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
-// //Adds {array: [value]}
-// await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
-// //Add assertionMethod to DID Document
-// console.log('Adding assertionMethod to DID Document');
-// await tlsDid.addAttribute(
-//   'assertionMethod[0]/id',
-//   'did:example:123456789abcdefghi#keys-2',
-//   pemKey
-// );
-// await tlsDid.addAttribute(
-//   'assertionMethod[0]/type',
-//   'Ed25519VerificationKey2018',
-//   pemKey
-// );
-// await tlsDid.addAttribute(
-//   'assertionMethod[0]/controller',
-//   'did:example:123456789abcdefghi',
-//   pemKey
-// );
-// await tlsDid.addAttribute(
-//   'assertionMethod[0]/publicKeyBase58',
-//   'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV',
-//   pemKey
-// );
+//Add attributes to DID Document (path, value)
+console.log('Adding example attribute to DID Document');
+//Adds {parent: {child: value}}
+await tlsDid.addAttribute('parent/child', 'value', pemKey);
+//Adds {array: [{element: value}]}
+await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
+//Adds {array: [value]}
+await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
+//Add assertionMethod to DID Document
+console.log('Adding assertionMethod to DID Document');
+await tlsDid.addAttribute(
+  'assertionMethod[0]/id',
+  'did:example:123456789abcdefghi#keys-2',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/type',
+  'Ed25519VerificationKey2018',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/controller',
+  'did:example:123456789abcdefghi',
+  pemKey
+);
+await tlsDid.addAttribute(
+  'assertionMethod[0]/publicKeyBase58',
+  'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV',
+  pemKey
+);
 
 //Add expiry to TLS-DID contract
 console.log('Setting expiry');

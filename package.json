@@ -8,6 +8,7 @@
     "testnet": "node --experimental-json-modules helpers/ganache",
     "deployRegistry": "node --experimental-json-modules helpers/truffle",
     "start": "node --experimental-json-modules src/index.js",
+    "benchmark": "node --experimental-json-modules --experimental-specifier-resolution=node src/benchmark/benchmark.js",
     "reload": "rm -rf node_modules && rm package-lock.json && npm i"
   },
   "repository": {
