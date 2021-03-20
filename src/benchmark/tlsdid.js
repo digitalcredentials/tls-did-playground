@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { performance } from 'perf_hooks';
-import { TLSDID as MaliciousTLSDID } from './maliciouslib/maliciousTlsDid.js';
 import { TLSDID } from '@digitalcredentials/tls-did';
 import { getResolver } from '@digitalcredentials/tls-did-resolver';
 import { Resolver } from 'did-resolver';
@@ -15,7 +14,6 @@ const __dirname = dirname(__filename);
 
 let REGISTRY;
 let jsonRpcUrl;
-let etherPrivateKey;
 
 let certPath;
 let cert;
@@ -29,7 +27,6 @@ let domain;
 
 function setEnvironment(config) {
   REGISTRY = config.registryAddress;
-  etherPrivateKey = config.privateKey;
   jsonRpcUrl = config.rpcUrl;
 }
 
@@ -48,16 +45,15 @@ export function setup() {
   setEnvironment(localEnv);
 
   console.log('REGISTRY:', REGISTRY);
-  console.log('Ethereum private key:', etherPrivateKey);
   console.log('Json Rpc Url:', jsonRpcUrl);
-  console.log('TLS pem key: \n', `${pemKey.substring(0, 64)}...`);
+  console.log('TLS pem key: \n', `.substring(0, 64)}...`);
 }
 
 //createTLSDID creates a new TLS-DID onchain and a corresponding TLS-DID js object.
 //If valid == false the expiry is set to
-async function createTLSDID(valid) {
+async function createTLSDID(etherPrivateKey, valid) {
   //Setup TLS-DID object
-  const tlsDid = new TLSDID(etherPrivateKey, {
+  const tlsDid = new TLSDID(domain, etherPrivateKey, {
     registry: REGISTRY,
     providerConfig: {
       rpcUrl: jsonRpcUrl,
@@ -65,13 +61,8 @@ async function createTLSDID(valid) {
   });
 
   //Deploy TLS-DID contract to ethereum blockchain
-  console.log('Deploying contract....');
-  await tlsDid.deployContract();
-  console.log('Contract address:', tlsDid.getAddress());
-
-  //Register TLS-DID contract with domain as key in registry contract
-  console.log('Registering contract with domain:', domain);
-  await tlsDid.registerContract(domain, pemKey);
+  console.log('Register claim..,');
+  await tlsDid.register();
 
   //Register TLS pem cert chain
   //Registering is needed for the full chain except the root certificate
@@ -79,43 +70,37 @@ async function createTLSDID(valid) {
     'Adding cert chain:',
     chain.map((cert) => `${cert.substring(0, 64)}...`)
   );
-  await tlsDid.addChain(chain, pemKey);
+  await tlsDid.addChain(chain);
 
   //Add attributes to DID Document (path, value)
   console.log('Adding example attribute to DID Document');
   //Adds {parent: {child: value}}
-  await tlsDid.addAttribute('parent/child', 'value', pemKey);
+  await tlsDid.addAttribute('parent/child', 'value');
   //Adds {array: [{element: value}]}
-  await tlsDid.addAttribute('arrayA[0]/element', 'value', pemKey);
+  await tlsDid.addAttribute('arrayA[0]/element', 'value');
   //Adds {array: [value]}
-  await tlsDid.addAttribute('arrayB[0]', 'value', pemKey);
+  await tlsDid.addAttribute('arrayB[0]', 'value');
   //Add assertionMethod to DID Document
   console.log('Adding assertionMethod to DID Document');
-  await tlsDid.addAttribute('assertionMethod[0]/id', 'did:example:123456789abcdefghi#keys-2', pemKey);
-  await tlsDid.addAttribute('assertionMethod[0]/type', 'Ed25519VerificationKey2018', pemKey);
-  await tlsDid.addAttribute('assertionMethod[0]/controller', 'did:example:123456789abcdefghi', pemKey);
-  await tlsDid.addAttribute('assertionMethod[0]/publicKeyBase58', 'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV', pemKey);
+  await tlsDid.addAttribute('assertionMethod[0]/id', 'did:example:123456789abcdefghi#keys-2');
+  await tlsDid.addAttribute('assertionMethod[0]/type', 'Ed25519VerificationKey2018');
+  await tlsDid.addAttribute('assertionMethod[0]/controller', 'did:example:123456789abcdefghi');
+  await tlsDid.addAttribute('assertionMethod[0]/publicKeyBase58', 'H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV');
 
   //Add expiry to TLS-DID contract
   console.log('Setting expiry');
-  await tlsDid.setExpiry(new Date('2040/12/12'), pemKey);
+  await tlsDid.setExpiry(new Date('2040/12/12'));
 
-  //Setting wrong signature for worst case resolver time
-  if (!valid) {
-    const mTlsDid = new MaliciousTLSDID(etherPrivateKey, {
-      registry: REGISTRY,
-      providerConfig: {
-        rpcUrl: jsonRpcUrl,
-      },
-    });
-    await mTlsDid.connectToContract(tlsDid.getAddress());
-    await mTlsDid.setSignature('xxx');
+  //Setting correct signature
+  if (valid) {
+    console.log('Signing');
+    await tlsDid.sign(pemKey);
   }
 
   return tlsDid;
 }
 
-export async function createTLSDIDsAndResolve(numberOfContracts) {
+export async function createTLSDIDsAndResolve(privateKeys) {
   //Setup resolver
   console.log('Resolving DID Document for did:', `did:tls:${domain}`);
   const tlsResolver = getResolver(
@@ -128,11 +113,11 @@ export async function createTLSDIDsAndResolve(numberOfContracts) {
   const resolver = new Resolver({ ...tlsResolver });
 
   //Setup empty tlsDid array and initial valid contract
-  let tlsDids = Array.from(Array(numberOfContracts));
-  tlsDids[0] = await createTLSDID(true);
+  let tlsDids = [];
+  tlsDids.push(await createTLSDID(privateKeys[0], true));
 
   let ts = [];
-  for (let i = 0; i < tlsDids.length; i++) {
+  for (let i = 0; i < privateKeys.length; i++) {
     //Resolve DID Document
     const t0 = performance.now();
 
@@ -140,15 +125,15 @@ export async function createTLSDIDsAndResolve(numberOfContracts) {
       const didDocument = await resolver.resolve(`did:tls:${domain}`);
       console.log('DID Document:', didDocument);
     } catch (err) {
-      console.error('Error while resolving did.', err.message);
+      console.error('Error while resolving did.', err);
     }
 
     const t1 = performance.now();
     console.log('Resolving DID took ' + (t1 - t0) + ' milliseconds.');
     ts[i] = t1 - t0;
 
-    if (i + 1 < tlsDids.length) {
-      tlsDids[i + 1] = await createTLSDID(false);
+    if (i + 1 < privateKeys.length) {
+      tlsDids.push(await createTLSDID(privateKeys[i + 1], false));
     }
   }
   console.log(ts);

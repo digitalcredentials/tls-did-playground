@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs';
 
 const registryPath = '../tls-did-registry';
 
-execSync(`npm run deploy-registry --prefix ${registryPath}`, {
+execSync(`npm run deploy --prefix ${registryPath}`, {
   stdio: 'inherit',
 });
 

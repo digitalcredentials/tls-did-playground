@@ -25,8 +25,8 @@
     "ganache-cli": "^6.12.0"
   },
   "dependencies": {
-    "@digitalcredentials/tls-did": "^0.1.4",
-    "@digitalcredentials/tls-did-resolver": "^0.2.1",
+    "@digitalcredentials/tls-did": "github:tls-did-project/tls-did#feature/eventDriven",
+    "@digitalcredentials/tls-did-resolver": "github:tls-did-project/tls-did-resolver#feature/eventDriven",
     "did-resolver": "^2.1.2",
     "ethers": "^5.0.19"
   }
