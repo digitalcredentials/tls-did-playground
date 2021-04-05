@@ -125,14 +125,14 @@ const tlsResolver = getResolver(
 );
 const resolver = new Resolver({ ...tlsResolver });
 
-// //Resolve DID Document
-// try {
-//   const didDocument = await resolver.resolve(`did:tls:${domain}`);
-//   console.log('DID Document:', didDocument);
-// } catch (err) {
-//   console.error('Error while resolving did.', err.data);
-// }
+//Resolve DID Document
+try {
+  const didDocument = await resolver.resolve(`did:tls:${domain}`);
+  console.log('DID Document:', didDocument);
+} catch (err) {
+  console.error('Error while resolving did.', err.data);
+}
 
-// //Delete TLS-DID
-// console.log('Deleting TLS-DID');
-// await tlsDid.delete();
+//Delete TLS-DID
+console.log('Deleting TLS-DID');
+await tlsDid.delete();

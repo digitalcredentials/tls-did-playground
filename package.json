@@ -27,7 +27,7 @@
     "ganache-cli": "^6.12.0"
   },
   "dependencies": {
-    "@digitalcredentials/tls-did": "^0.3.1",
+    "@digitalcredentials/tls-did": "^0.3.3",
     "@digitalcredentials/tls-did-resolver": "^0.4.0",
     "did-resolver": "^2.1.2",
     "ethers": "^5.0.19"
