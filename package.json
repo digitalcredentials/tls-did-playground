@@ -7,7 +7,9 @@
   "scripts": {
     "testnet": "node --experimental-json-modules helpers/ganache",
     "deployRegistry": "node --experimental-json-modules helpers/truffle",
-    "start": "node --experimental-json-modules src/index.js",
+    "createAndResolve": "node --experimental-json-modules src/createAndResolve.js",
+    "resolve": "node --experimental-json-modules src/resolve.js",
+    "delete": "node --experimental-json-modules src/delete.js",
     "benchmark": "node --experimental-json-modules --experimental-specifier-resolution=node src/benchmark/benchmark.js",
     "reload": "rm -rf node_modules && rm package-lock.json && npm i"
   },
@@ -25,8 +27,8 @@
     "ganache-cli": "^6.12.0"
   },
   "dependencies": {
-    "@digitalcredentials/tls-did": "^0.2.0",
-    "@digitalcredentials/tls-did-resolver": "^0.3.0",
+    "@digitalcredentials/tls-did": "^0.3.1",
+    "@digitalcredentials/tls-did-resolver": "^0.4.0",
     "did-resolver": "^2.1.2",
     "ethers": "^5.0.19"
   }
